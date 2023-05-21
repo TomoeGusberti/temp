@@ -1,0 +1,21 @@
+model
+{
+	# Priors for the gamma plus and beta parameters:
+	gplus~dunif(0,10)
+	beta~dunif(0,10)
+
+	for (i in 1:Trials)
+	{
+		# Amount of pumps DM considers optimal:
+		Omega[i]<- -gplus/log(1-pBelief[i])
+	
+		for(j in 1:Option[i])
+		{				
+			# Probability that DM will cash for trial i for pump j:
+			pCash[i,j] <- 1-( 1/(1+exp(beta*(j-Omega[i]))))
+
+			# Choice contains the data as binary variables:
+			Choice[i,j]~dbern(pCash[i,j])
+		}
+	}
+}
